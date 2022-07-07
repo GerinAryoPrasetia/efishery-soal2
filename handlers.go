@@ -154,7 +154,43 @@ func (h *loanDocumentHandlres) get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *loanDocumentHandlres) post(w http.ResponseWriter, r *http.Request) {
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
+	ct := r.Header.Get("content-type")
+	if ct != "application/json" {
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		w.Write([]byte(fmt.Sprintf("Need content-type : application/json, but got '%s'", ct)))
+		return
+	}
+
+	var loanDocument LoanDocument
+	err = json.Unmarshal(bodyBytes, &loanDocument)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+	}
+
+	parts := strings.Split(r.URL.String(), "/")
+	if len(parts) != 3 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	fmt.Println(parts[2])
+
+	uuid_document := uuid.NewV1().String()
+	loanDocument.ID = uuid_document
+	loanDocument.CustomerID = parts[2] //simpan customer id yang diambil dari parameters
+
+	h.Lock()
+	h.store[loanDocument.ID] = loanDocument
+	defer h.Unlock()
 }
 
 func (a pegawaiPortal) handler(w http.ResponseWriter, r *http.Request) {

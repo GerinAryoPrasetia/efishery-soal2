@@ -12,6 +12,7 @@ func main() {
 	http.HandleFunc("/customers", customerHandlers.customers)
 	http.HandleFunc("/customers/", customerHandlers.getCustomer)
 	http.HandleFunc("/loan-documents", loanDocumentHandlers.loanDocuments)
+	http.HandleFunc("/loan-documents/", loanDocumentHandlers.post)
 	http.HandleFunc("/pegawai", pegawai.handler)
 
 	err := http.ListenAndServe(":4000", nil)
