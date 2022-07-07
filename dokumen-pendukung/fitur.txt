@@ -1,0 +1,16 @@
+Loan Application - Gerin Aryo Prasetia
+Fitur : 
+
+1. Customer dapat mengirimkan form pengajuan pinjaman
+
+2. Pegawai dapat melihat form ajuan petani
+
+3. Cutsomer dapat melihat ajuan pinjaman yang diajukan
+
+4. Customer dapat mengedit pengajuan pinjaman
+
+5. Customer dapat menghapusan pengajuan pinjaman
+
+6. Pegawai dapat menyetujui form ajuan dari customer
+
+7. Pegawai dapat melihat form ajuan berdasarkan ID
