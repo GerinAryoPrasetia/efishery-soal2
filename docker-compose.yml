@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:12-alpine
+    ports: 
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: whoami00
+      POSTGRES_DB: loan_application
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:1323"
+    depends_on:
+      - db
+    networks:
+      - default
