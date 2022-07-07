@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"sync"
 )
@@ -27,16 +28,36 @@ func (h *customerHandlers) customers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *customerHandlers) post(w http.ResponseWriter, r *http.Request) {
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
 
+	var customer Customer
+	err = json.Unmarshal(bodyBytes, &customer)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+	}
+
+	h.Lock()
+	h.store[customer.ID] = customer
+	defer h.Unlock()
 }
 
 func (h *customerHandlers) get(w http.ResponseWriter, r *http.Request) {
 	customers := make([]Customer, len(h.store))
+
+	h.Lock()
 	i := 0
 	for _, customer := range h.store {
 		customers[i] = customer
 		i++
 	}
+	h.Unlock()
+
 	jsonBytes, err := json.Marshal(customers)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
