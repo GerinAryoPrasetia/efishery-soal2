@@ -24,3 +24,7 @@ type Pegawai struct {
 	FirstName string
 	LastName  string
 }
+
+type pegawaiPortal struct {
+	password string
+}
